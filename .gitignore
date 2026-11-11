@@ -1,0 +1,25 @@
+# Credenciales y llaves (nunca subir)
+.env
+.env.*
+secrets.h
+config.local.js
+**/credenciales.*
+
+# Dependencias
+node_modules/
+
+# Editor y sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Compilación del ESP32 (Arduino y PlatformIO)
+.pio/
+build/
+*.bin
+*.elf
+
+# Archivos temporales y registros
+*.log
+*.tmp
