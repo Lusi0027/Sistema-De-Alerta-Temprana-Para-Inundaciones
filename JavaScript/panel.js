@@ -1,7 +1,7 @@
 import { MODO_DEMO } from './supabase-config.js';
 import {
   obtenerPuntos, ultimaLectura, ultimasLecturas, suscribirLecturas,
-  escenarioDemo, fijarEscenarioDemo,
+  escenarioDemo, fijarEscenarioDemo, PUNTOS_PROXIMAMENTE,
 } from './datos.js';
 import { ESTADOS, esLecturaVigente, textoEdad } from './estado.js';
 import { cargarPronostico } from './Estado/pronostico.js';
@@ -9,11 +9,16 @@ import { cargarPronostico } from './Estado/pronostico.js';
 const $ = (id) => document.getElementById(id);
 const el = {
   aviso: $('aviso'),
+  alertaRiesgo: $('alerta-riesgo'),
+  notificaciones: $('estado-notificaciones'),
+  activarNotificaciones: $('btn-notificaciones'),
   selector: $('selector-punto'),
   semaforo: $('semaforo'),
+  estadoCard: $('estado-card'),
   estado: $('estado-pill'),
   detalle: $('estado-detalle'),
   nivel: $('dato-nivel'),
+  medidor: $('medidor-nivel'),
   velocidad: $('dato-velocidad'),
   lecturas: $('lecturas'),
   hora: $('dato-hora'),
@@ -25,10 +30,96 @@ const el = {
 let puntos = [];
 let lecturaActual = null;
 let cancelarSuscripcion = null;
+let ultimaNotificacion = null;
 
 function mostrarAviso(mensaje) {
   el.aviso.textContent = mensaje;
   el.aviso.hidden = false;
+}
+
+function actualizarEstadoNotificaciones() {
+  const boton = el.activarNotificaciones;
+  if (!('Notification' in window)) {
+    boton.hidden = true;
+    el.notificaciones.textContent = 'Este navegador no admite notificaciones.';
+    return;
+  }
+  if (!window.isSecureContext) {
+    boton.hidden = true;
+    el.notificaciones.textContent = 'Las notificaciones requieren HTTPS o abrir la app en localhost.';
+    return;
+  }
+
+  const permiso = window.Notification.permission;
+  if (permiso === 'granted') {
+    boton.hidden = true;
+    el.notificaciones.textContent = 'Notificaciones activadas. Recibirás avisos de Precaución y Peligro.';
+  } else if (permiso === 'denied') {
+    boton.disabled = true;
+    boton.textContent = 'Notificaciones bloqueadas';
+    el.notificaciones.textContent = 'Permite las notificaciones de este sitio desde la configuración del navegador.';
+  } else {
+    boton.disabled = false;
+    boton.textContent = 'Activar notificaciones';
+    el.notificaciones.textContent = 'Activa las notificaciones para recibir avisos de riesgo en este dispositivo.';
+  }
+}
+
+async function solicitarNotificaciones() {
+  try {
+    await window.Notification.requestPermission();
+    actualizarEstadoNotificaciones();
+    if (window.Notification.permission === 'granted' && lecturaActual) {
+      actualizarAlertaRiesgo(estadoDe(lecturaActual));
+    }
+  } catch (error) {
+    el.notificaciones.textContent = `No se pudieron activar las notificaciones: ${error.message || 'error del navegador'}`;
+  }
+}
+
+function emitirNotificacion(estado, mensaje) {
+  if (!window.isSecureContext || !('Notification' in window)
+      || window.Notification.permission !== 'granted') return;
+
+  const puntoId = el.selector.value;
+  const clave = `${puntoId}:${estado}`;
+  if (clave === ultimaNotificacion) return;
+  ultimaNotificacion = clave;
+
+  try {
+    new window.Notification(
+      estado === 'rojo' ? 'Peligro de inundación' : 'Precaución por inundación',
+      {
+        body: mensaje,
+        icon: new URL('../Assets/favicon.svg', window.location.href).href,
+        tag: `alerta-inundacion-${puntoId}`,
+        renotify: true,
+      },
+    );
+  } catch (error) {
+    el.notificaciones.textContent = `No se pudo mostrar la notificación: ${error.message || 'error del navegador'}`;
+  }
+}
+
+function actualizarAlertaRiesgo(estado) {
+  if (estado !== 'amarillo' && estado !== 'rojo') {
+    el.alertaRiesgo.hidden = true;
+    el.alertaRiesgo.textContent = '';
+    delete el.alertaRiesgo.dataset.estado;
+    ultimaNotificacion = null;
+    return;
+  }
+
+  const punto = puntos.find((item) => String(item.id) === el.selector.value);
+  const nombre = punto ? punto.nombre : 'este punto';
+  const mensaje = estado === 'rojo'
+    ? `Peligro de inundación en ${nombre}. Aléjate del cauce y sigue las indicaciones de las autoridades.`
+    : `Precaución en ${nombre}: el nivel del agua está elevado. Evita acercarte al cauce y mantente atento a las indicaciones oficiales.`;
+
+  el.alertaRiesgo.dataset.estado = estado;
+  if (el.alertaRiesgo.textContent !== mensaje) el.alertaRiesgo.textContent = mensaje;
+  el.alertaRiesgo.hidden = false;
+  emitirNotificacion(estado, mensaje);
 }
 
 function estadoDe(lectura) {
@@ -42,13 +133,18 @@ function pintarLectura(lectura) {
   const estado = estadoDe(lectura);
   const info = ESTADOS[estado];
   el.semaforo.dataset.estado = estado;
+  el.estadoCard.dataset.estado = estado;
   el.semaforo.setAttribute('aria-label', `Semáforo: ${info.etiqueta}`);
   el.estado.dataset.estado = estado;
   el.estado.textContent = info.etiqueta;
   el.detalle.textContent = info.detalle;
+  actualizarAlertaRiesgo(estado);
 
   const vigente = estado !== 'desconocido';
   el.nivel.textContent = vigente ? Number(lectura.nivel_cm).toFixed(1) : '--';
+  el.medidor.style.height = vigente
+    ? `${Math.max(0, Math.min(100, (Number(lectura.nivel_cm) / 40) * 100))}%`
+    : '0%';
   el.velocidad.textContent = vigente ? Number(lectura.velocidad_cm_min).toFixed(2) : '--';
   el.lecturas.classList.toggle('vencida', !vigente);
   actualizarHora();
@@ -63,10 +159,13 @@ function actualizarHora() {
   if (estadoDe(lecturaActual) === 'desconocido') {
     el.hora.textContent = 'Lectura antigua; esperando datos recientes';
     el.semaforo.dataset.estado = 'desconocido';
+    el.estadoCard.dataset.estado = 'desconocido';
     el.estado.dataset.estado = 'desconocido';
     el.estado.textContent = ESTADOS.desconocido.etiqueta;
     el.detalle.textContent = ESTADOS.desconocido.detalle;
+    actualizarAlertaRiesgo('desconocido');
     el.nivel.textContent = '--';
+    el.medidor.style.height = '0%';
     el.velocidad.textContent = '--';
     el.lecturas.classList.add('vencida');
   }
@@ -74,7 +173,7 @@ function actualizarHora() {
 
 function pintarLista(lecturas) {
   const porPunto = new Map(lecturas.map((lectura) => [String(lectura.punto_id), lectura]));
-  el.lista.replaceChildren(...puntos.map((punto) => {
+  const botonesActivos = puntos.map((punto) => {
     const lectura = porPunto.get(String(punto.id));
     const estado = estadoDe(lectura);
     const boton = document.createElement('button');
@@ -99,7 +198,27 @@ function pintarLista(lecturas) {
       seleccionarPunto();
     });
     return boton;
-  }));
+  });
+  const botonesProximamente = PUNTOS_PROXIMAMENTE.map((nombre) => {
+    const boton = document.createElement('button');
+    boton.type = 'button';
+    boton.className = 'punto-item punto-proximamente';
+    boton.disabled = true;
+    boton.setAttribute('aria-label', `${nombre}: Próximamente`);
+
+    const dot = document.createElement('span');
+    dot.className = 'dot';
+    dot.setAttribute('aria-hidden', 'true');
+    const etiquetaNombre = document.createElement('span');
+    etiquetaNombre.className = 'punto-nombre';
+    etiquetaNombre.textContent = nombre;
+    const etiquetaEstado = document.createElement('span');
+    etiquetaEstado.className = 'punto-estado';
+    etiquetaEstado.textContent = 'Próximamente';
+    boton.append(dot, etiquetaNombre, etiquetaEstado);
+    return boton;
+  });
+  el.lista.replaceChildren(...botonesActivos, ...botonesProximamente);
 }
 
 async function actualizarLista() {
@@ -156,6 +275,8 @@ function prepararDemo() {
 }
 
 async function iniciar() {
+  el.activarNotificaciones.addEventListener('click', solicitarNotificaciones);
+  actualizarEstadoNotificaciones();
   if (MODO_DEMO) prepararDemo();
   cargarPronostico();
 

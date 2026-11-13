@@ -1,0 +1,102 @@
+/* ==========================================================
+   historial.css — página Historial
+   Cargar DESPUÉS de estilos.css y semaforo.css
+   ========================================================== */
+
+/* ---------- Botones de acción (Actualizar, Descargar CSV) ---------- */
+.content button {
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 600;
+  padding: .6rem 1.1rem;
+  border-radius: var(--radio-sm);
+  border: 1px solid var(--agua-500);
+  background: var(--agua-700);
+  color: #fff;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+}
+.content button:hover { background: var(--agua-500); }
+.content button:active { transform: scale(.97); }
+
+/* El segundo botón (Descargar CSV) como acción secundaria */
+.content button + button {
+  background: transparent;
+  color: var(--agua-500);
+}
+.content button + button:hover { background: var(--agua-100); }
+
+/* Barra que agrupa los botones, si existe */
+.acciones, .barra-acciones, .content > div:has(> button) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+}
+
+/* ---------- Gráfica (SVG) ---------- */
+.content svg:not([aria-hidden="true"]) {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Fondo del área de la gráfica: antes salía negro */
+.content svg:not([aria-hidden="true"]) rect:first-of-type {
+  fill: var(--agua-100);
+  stroke: var(--borde);
+}
+
+/* Etiquetas de los ejes: antes salían oscuras sobre fondo oscuro */
+.content svg:not([aria-hidden="true"]) text {
+  fill: var(--texto-suave);
+  font-family: var(--fuente);
+  font-size: 12px;
+}
+
+/* Líneas de la cuadrícula */
+.content svg:not([aria-hidden="true"]) line {
+  stroke: var(--borde);
+  stroke-width: 1;
+}
+
+/* Línea de datos y puntos */
+.content svg:not([aria-hidden="true"]) polyline,
+.content svg:not([aria-hidden="true"]) path {
+  fill: none;
+  stroke: var(--agua-500);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.content svg:not([aria-hidden="true"]) circle {
+  fill: var(--agua-500);
+  stroke: var(--superficie);
+  stroke-width: 2;
+}
+
+/* Si la gráfica es un <canvas> */
+.content canvas {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* La gráfica usa clases propias para distinguir los umbrales de riesgo. */
+.grafica .zona-normal { fill: var(--verde-fondo); }
+.grafica .zona-atencion { fill: var(--amarillo-fondo); }
+.grafica .zona-alerta { fill: var(--rojo-fondo); }
+.grafica .rejilla { stroke: var(--borde); stroke-width: 1; }
+.grafica .eje { fill: var(--texto-suave); font-family: var(--fuente); font-size: 12px; }
+.grafica .linea-nivel {
+  fill: none;
+  stroke: var(--agua-500);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.grafica .punto-nivel { fill: var(--agua-500); stroke: var(--superficie); stroke-width: 2; }
+.grafica .umbral-amarillo { stroke: var(--amarillo); stroke-dasharray: 5 4; }
+.grafica .umbral-rojo { stroke: var(--rojo); stroke-dasharray: 5 4; }
+.grafica .etq-amarillo { fill: var(--amarillo); font-size: 11px; }
+.grafica .etq-rojo { fill: var(--rojo); font-size: 11px; }

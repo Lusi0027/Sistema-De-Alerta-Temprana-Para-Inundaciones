@@ -1,80 +1,283 @@
-/* =========================================================
-   Semáforo y colores de estado.
-   panel.js solo cambia data-estado: verde | amarillo | rojo | desconocido
-   ========================================================= */
-:root {
-  --verde: #1B7F3B;
-  --verde-luz: #43A047;
-  --amarillo: #FDD835;
-  --amarillo-texto: #3D2F00;
-  --rojo: #C62828;
-  --rojo-luz: #E53935;
-}
+/* ==========================================================
+   semaforo.css — semáforo, estado, lecturas y pronóstico
+   Cargar DESPUÉS de estilos.css
+   ========================================================== */
 
+/* ---------- Tarjeta de estado ---------- */
+.estado-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 1.5rem;
+  border-top: 5px solid var(--gris);
+  transition: border-color .3s;
+}
+.estado-card[data-estado="verde"]    { border-top-color: var(--verde); }
+.estado-card[data-estado="amarillo"] { border-top-color: var(--amarillo); }
+.estado-card[data-estado="rojo"]     { border-top-color: var(--rojo); }
+
+.estado-copy { display: grid; gap: .75rem; min-width: 0; }
+.estado-info { display: grid; gap: .45rem; justify-items: start; }
+#estado-detalle { color: var(--texto-suave); font-size: .95rem; }
+.edad { font-size: .8rem; color: var(--texto-suave); }
+
+/* ---------- Semáforo ---------- */
 .semaforo {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 14px;
-  background: #1E2329;
-  border-radius: 44px;
-  flex: none;
+  gap: .7rem;
+  padding: .9rem;
+  width: 84px;
+  background: linear-gradient(180deg, #1c2a33, #0d171d);
+  border-radius: 22px;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, .08), 0 10px 24px rgba(11, 42, 61, .25);
 }
 
 .luz {
-  width: 56px;
-  height: 56px;
+  display: block;
+  width: 54px; height: 54px;
   border-radius: 50%;
-  background: #5A606B;
-  opacity: 0.35;
-  transition: opacity 0.3s, box-shadow 0.3s, background 0.3s;
+  background: #2b3a44;
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, .55);
+  transition: background .3s, box-shadow .3s;
 }
 
-/* Solo se enciende la luz del estado actual */
 .semaforo[data-estado="rojo"] .luz-rojo {
-  background: var(--rojo-luz); opacity: 1; box-shadow: 0 0 22px var(--rojo-luz);
-  animation: pulso 1.2s ease-in-out infinite;
+  background: radial-gradient(circle at 35% 30%, #ff8c8c, var(--rojo) 60%);
+  box-shadow: 0 0 22px 6px rgba(214, 61, 61, .55);
+  animation: pulso 1.4s ease-in-out infinite;
 }
 .semaforo[data-estado="amarillo"] .luz-amarillo {
-  background: var(--amarillo); opacity: 1; box-shadow: 0 0 22px var(--amarillo);
+  background: radial-gradient(circle at 35% 30%, #ffe08a, var(--amarillo) 60%);
+  box-shadow: 0 0 22px 6px rgba(232, 163, 23, .5);
 }
 .semaforo[data-estado="verde"] .luz-verde {
-  background: var(--verde-luz); opacity: 1; box-shadow: 0 0 22px var(--verde-luz);
+  background: radial-gradient(circle at 35% 30%, #7fe3b4, var(--verde) 60%);
+  box-shadow: 0 0 22px 6px rgba(31, 157, 99, .45);
 }
 
+/* El único movimiento de la página: la alerta roja late */
 @keyframes pulso {
-  50% { box-shadow: 0 0 34px var(--rojo-luz); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .luz { transition: none; }
-  .semaforo[data-estado="rojo"] .luz-rojo { animation: none; }
+  50% { box-shadow: 0 0 34px 12px rgba(214, 61, 61, .7); }
 }
 
-/* Etiqueta de estado (siempre con texto, no solo color) */
+/* ---------- Pill de estado ---------- */
 .pill {
-  display: inline-block;
-  padding: 6px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .35rem .9rem;
   border-radius: 999px;
-  font-size: 20px;
-  font-weight: 600;
-  background: #E3E8EC;
-  color: #3A4A57;
+  font-size: 1.05rem;
+  font-weight: 700;
+  background: var(--gris-fondo);
+  color: var(--texto-suave);
 }
-.pill[data-estado="verde"]    { background: var(--verde);    color: #FFFFFF; }
-.pill[data-estado="amarillo"] { background: var(--amarillo); color: var(--amarillo-texto); }
-.pill[data-estado="rojo"]     { background: var(--rojo);     color: #FFFFFF; }
-
-/* Punto de color para listas y tablas */
-.dot {
-  width: 14px;
-  height: 14px;
+.pill::before {
+  content: "";
+  width: 10px; height: 10px;
   border-radius: 50%;
-  background: #9AA7B1;
-  flex: none;
+  background: currentColor;
 }
-.dot[data-estado="verde"]    { background: var(--verde-luz); }
-.dot[data-estado="amarillo"] { background: var(--amarillo); box-shadow: inset 0 0 0 1px #A67C00; }
-.dot[data-estado="rojo"]     { background: var(--rojo-luz); }
+.pill[data-estado="verde"]    { background: var(--verde-fondo);    color: var(--verde); }
+.pill[data-estado="amarillo"] { background: var(--amarillo-fondo); color: #a8730a; }
+.pill[data-estado="rojo"]     { background: var(--rojo-fondo);     color: var(--rojo); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .pill[data-estado="amarillo"] { color: var(--amarillo); }
+}
 
-/* Etiqueta pequeña para tablas */
-.pill-chica { font-size: 13px; padding: 2px 10px; }
+/* ---------- Lecturas ---------- */
+.lecturas {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.lecturas > div {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 1.1rem 1.25rem;
+}
+.lecturas dt { font-size: .8rem; font-weight: 600; color: var(--texto-suave); }
+.lecturas dd { margin: .25rem 0 0; font-size: 2.4rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.unidad { font-size: .95rem; font-weight: 600; color: var(--texto-suave); }
+
+/* El medidor de nivel es la pieza protagonista */
+.nivel-actual {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 1rem;
+}
+.nivel-actual dt, .nivel-actual dd { grid-column: 1; }
+.medidor {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  gap: .5rem;
+  height: 120px;
+}
+.medidor-marcas {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: .7rem;
+  color: var(--texto-suave);
+  text-align: right;
+}
+.medidor-pista {
+  position: relative;
+  width: 22px;
+  overflow: hidden;
+  border-radius: 12px;
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 22px, var(--borde) 22px 23px),
+    var(--gris-fondo);
+  border: 1px solid var(--borde);
+}
+#medidor-nivel {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 0; /* panel.js ajusta la altura (%) */
+  background: linear-gradient(180deg, #5bb8dc, var(--agua-500));
+  border-radius: 0 0 12px 12px;
+  transition: height .6s ease, background .3s;
+}
+.estado-card[data-estado="amarillo"] ~ .lecturas #medidor-nivel { background: linear-gradient(180deg, #f3c04f, var(--amarillo)); }
+.estado-card[data-estado="rojo"] ~ .lecturas #medidor-nivel      { background: linear-gradient(180deg, #ee7a7a, var(--rojo)); }
+
+/* ---------- Pronóstico ---------- */
+.pronostico { display: grid; gap: 1rem; }
+.pron-fila { display: flex; align-items: center; gap: 1rem; }
+.pron-fila > svg { flex: none; color: var(--agua-500); }
+.pron-texto { display: grid; gap: .15rem; }
+.pron-texto strong { font-size: 1.1rem; }
+#pron-detalle { font-size: .88rem; color: var(--texto-suave); }
+
+/* ---------- Móvil pequeño ---------- */
+@media (max-width: 440px) {
+  .estado-card { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .estado-info { justify-items: center; }
+  .lecturas { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================
+   AJUSTE: barras del pronóstico y lista "Todos los puntos"
+   ========================================================== */
+
+/* ---------- Barras de lluvia por hora ---------- */
+.pron-barras {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-items: stretch;
+  height: auto;
+  min-height: 0;
+  gap: .5rem;
+  padding: 0;
+  border: 0;
+}
+.pron-columna {
+  display: grid;
+  grid-template-rows: auto 68px auto;
+  justify-items: center;
+  gap: .35rem;
+  min-width: 0;
+  padding: 0;
+  color: var(--texto);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.pron-valor { color: var(--texto); font-size: .7rem; white-space: nowrap; }
+.pron-track {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  max-width: 44px;
+  height: 68px;
+  padding: 2px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--agua-100);
+}
+.pron-track .barra {
+  display: block;
+  width: 100%;
+  min-height: 0;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #5bb8dc, var(--agua-500));
+  transition: height .25s ease;
+}
+.pron-hora { color: var(--texto-suave); font-size: .7rem; }
+.pron-escala { margin-top: -.25rem; color: var(--texto-suave); font-size: .75rem; }
+@media (min-width: 720px) {
+  .pronostico {
+    grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+    align-items: center;
+  }
+  .pron-escala { grid-column: 1 / -1; }
+}
+
+/* ---------- Lista de puntos (botones) ---------- */
+.lista-puntos > li:has(> button),
+.lista-puntos > li:has(> a) {
+  padding: 0;
+  border: 0;
+  background: none;
+  display: block;
+}
+
+.lista-puntos button,
+.lista-puntos li > a {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .9rem 1rem;
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  text-decoration: none;
+  color: var(--texto);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-left: 5px solid var(--gris);
+  border-radius: var(--radio-sm);
+  box-shadow: var(--sombra);
+  cursor: pointer;
+  transition: background .15s, border-color .15s, transform .1s;
+}
+.lista-puntos button:hover,
+.lista-puntos li > a:hover { background: var(--agua-100); }
+.lista-puntos button:active { transform: scale(.99); }
+.lista-puntos button.punto-proximamente:disabled {
+  background: var(--fondo);
+  border-left-color: var(--borde);
+  opacity: 1;
+  cursor: not-allowed;
+}
+.lista-puntos button.punto-proximamente:disabled > :last-child {
+  background: var(--gris-fondo);
+  color: var(--texto-suave);
+}
+
+/* color del borde según estado (en el botón o en el li) */
+.lista-puntos [data-estado="verde"]    > button, .lista-puntos button[data-estado="verde"]    { border-left-color: var(--verde); }
+.lista-puntos [data-estado="amarillo"] > button, .lista-puntos button[data-estado="amarillo"] { border-left-color: var(--amarillo); }
+.lista-puntos [data-estado="rojo"]     > button, .lista-puntos button[data-estado="rojo"]     { border-left-color: var(--rojo); }
+
+/* el segundo texto (Normal / Peligro) como etiqueta de estado */
+.lista-puntos button > :last-child {
+  flex: none;
+  padding: .2rem .7rem;
+  border-radius: 999px;
+  font-size: .8rem;
+  font-weight: 700;
+  background: var(--gris-fondo);
+  color: var(--texto-suave);
+}
+.lista-puntos [data-estado="verde"]    button > :last-child, .lista-puntos button[data-estado="verde"]    > :last-child { background: var(--verde-fondo);    color: var(--verde); }
+.lista-puntos [data-estado="amarillo"] button > :last-child, .lista-puntos button[data-estado="amarillo"] > :last-child { background: var(--amarillo-fondo); color: var(--amarillo); }
+.lista-puntos [data-estado="rojo"]     button > :last-child, .lista-puntos button[data-estado="rojo"]     > :last-child { background: var(--rojo-fondo);     color: var(--rojo); }

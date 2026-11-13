@@ -18,7 +18,7 @@ JavaScript/
   datos.js              acceso a datos: Supabase o modo demo
   panel.js              lógica del panel
   Estado/               pronostico.js, historial.js, configuracion.js
-Firmware/FloodSensor/   código del ESP32 (Arduino)
+Firmware/               FloodSensor.ino y secrets.example.h para el ESP32
 supabase-setup.sql      base de datos, seguridad y funciones
 ```
 
@@ -38,8 +38,9 @@ Mientras `supabase-config.js` diga `PEGA_AQUI…`, la app usa datos simulados. A
    insert into operadores (email) values ('correo-del-operador@ejemplo.com');
    ```
    Desactiva "Allow new users to sign up" en la configuración de Authentication.
-4. **Project Settings → API**: copia la URL y la clave *anon* en `JavaScript/supabase-config.js`.
+4. **Project Settings → API**: copia la URL y la clave *anon* en `JavaScript/supabase-config.js` y en `Firmware/secrets.h`.
    Nunca uses la clave `service_role` en el navegador ni en el ESP32.
+   Al completar ambos valores, la aplicación deja el modo demostración y consulta Supabase.
 5. Registra el dispositivo (inventa un token de 32+ caracteres y guárdalo en `secrets.h`; aquí va solo su hash):
    ```sql
    insert into dispositivos (punto_id, token_hash, descripcion)
@@ -64,12 +65,14 @@ Mientras `supabase-config.js` diga `PEGA_AQUI…`, la app usa datos simulados. A
 | LED rojo | GPIO 27 | Resistencia de 220 Ω |
 | Zumbador activo | GPIO 14 | Suena intermitente en rojo |
 
-1. Copia `Firmware/FloodSensor/secrets.example.h` como `secrets.h` y llénalo.
+1. Copia `Firmware/secrets.example.h` como `Firmware/secrets.h` y llénalo con el WiFi, URL/clave anon de Supabase y el mismo token cuyo hash registraste en `dispositivos`.
 2. Ajusta `ALTURA_SENSOR_CM` (distancia del sensor al fondo con el cauce seco).
-3. Arduino IDE → placa **ESP32 Dev Module** → subir.
+3. Abre `Firmware/FloodSensor.ino` en Arduino IDE, selecciona **ESP32 Dev Module** y sube el programa.
 4. Abre el Monitor Serie a 115200 para ver `dist`, `nivel`, `vel` y `estado`.
+5. Abre `Html/index.html` con Live Server. Cuando Supabase y el token estén configurados, desaparecerá el aviso de modo demostración y el panel mostrará las lecturas guardadas en la base de datos.
 
 El semáforo local funciona sin WiFi. Si el sensor falla 3 veces seguidas, los tres LED parpadean.
+El HC-SR04 no es impermeable: protégelo de salpicaduras y no lo sumerjas. Para uso permanente a la intemperie, emplea un sensor ultrasónico impermeable compatible y conserva la adaptación de nivel lógico de ECHO a 3.3 V.
 
 ## 4. Cómo se decide el color
 

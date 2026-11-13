@@ -6,17 +6,20 @@
   <title>Sistema de alerta temprana para inundaciones</title>
   <link rel="icon" href="../Assets/favicon.svg" type="image/svg+xml">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="../Css/estilos.css">
   <link rel="stylesheet" href="../Css/semaforo.css">
 </head>
 <body class="pagina-panel">
   <header class="header-title">
-    <h1>Sistema de alerta temprana para inundaciones</h1>
-    <p class="subtitulo">San Pedro de Macorís · actualizado en tiempo real</p>
+    <a class="marca-logo" href="index.html" aria-label="Ir al inicio">
+      <img src="../Assets/favicon.svg" alt="">
+    </a>
+    <div class="header-copy">
+      <h1>Sistema de alerta temprana para inundaciones</h1>
+      <p class="subtitulo">San Pedro de Macorís 
+        <time id="fecha-hoy" class="fecha-hoy"></time>
+      </p>
+    </div>
   </header>
 
   <main class="content">
@@ -27,6 +30,13 @@
     </div>
 
     <p id="aviso" class="aviso" role="alert" hidden></p>
+    <div class="notificaciones-control">
+      <p id="estado-notificaciones" class="notificaciones-estado" role="status">
+        Activa las notificaciones para recibir avisos de riesgo en este dispositivo.
+      </p>
+      <button id="btn-notificaciones" class="boton boton-sec" type="button">Activar notificaciones</button>
+    </div>
+    <p id="alerta-riesgo" class="alerta-riesgo" role="alert" hidden></p>
 
     <div class="campo">
       <label for="selector-punto">Punto de medición</label>
@@ -35,7 +45,7 @@
       </select>
     </div>
 
-    <section class="tarjeta estado-card" aria-labelledby="titulo-alerta">
+    <section class="tarjeta estado-card" id="estado-card" data-estado="desconocido" aria-labelledby="titulo-alerta">
       <h2 id="titulo-alerta" class="solo-lectores">Alerta de inundación</h2>
 
       <!-- panel.js cambia data-estado a verde | amarillo | rojo | desconocido -->
@@ -45,36 +55,41 @@
         <span class="luz luz-verde"></span>
       </div>
 
-      <div class="estado-info" aria-live="polite">
-        <span class="etiqueta">Estado actual</span>
-        <span class="pill" id="estado-pill" data-estado="desconocido">Sin datos</span>
-        <p id="estado-detalle">Esperando la primera lectura.</p>
+      <div class="estado-copy">
+        <div class="estado-info" aria-live="polite">
+          <span class="etiqueta">Estado actual</span>
+          <span class="pill" id="estado-pill" data-estado="desconocido">Sin datos</span>
+          <p id="estado-detalle">Esperando la primera lectura.</p>
+        </div>
+        <p class="edad" id="dato-hora">Sin lecturas</p>
       </div>
     </section>
 
     <dl class="lecturas" id="lecturas">
-      <div>
-        <dt>Nivel del agua</dt>
+      <div class="nivel-actual">
+        <dt>Nivel actual</dt>
         <dd><span id="dato-nivel">--</span> <span class="unidad">cm</span></dd>
+        <div class="medidor" aria-hidden="true">
+          <div class="medidor-marcas"><span>40 cm</span><span>20 cm</span><span>0 cm</span></div>
+          <div class="medidor-pista"><span id="medidor-nivel"></span></div>
+        </div>
       </div>
-      <div>
-        <dt>Velocidad de subida</dt>
+      <div class="velocidad-actual">
+        <dt>Rapidez de subida</dt>
         <dd><span id="dato-velocidad">--</span> <span class="unidad">cm/min</span></dd>
       </div>
     </dl>
-    <p class="edad" id="dato-hora">Sin lecturas</p>
-
     <section class="tarjeta pronostico" aria-labelledby="titulo-pron">
       <div class="pron-fila">
-        <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1565C0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 9a3.5 3.5 0 0 1 .5 7H7z"/><path d="M9 19l-1 2M13 19l-1 2M17 19l-1 2"/></svg>
+        <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 9a3.5 3.5 0 0 1 .5 7H7z"/><path d="M9 19l-1 2M13 19l-1 2M17 19l-1 2"/></svg>
         <div class="pron-texto">
-          <span class="etiqueta" id="titulo-pron">Pronóstico · Open-Meteo</span>
+          <span class="etiqueta" id="titulo-pron">Lluvia prevista · próximas 6 horas</span>
           <strong id="pron-resumen">Cargando…</strong>
           <span id="pron-detalle"></span>
         </div>
       </div>
-      <div class="pron-barras" id="pron-barras" aria-hidden="true"></div>
-      <p class="pron-escala" id="pron-escala" aria-hidden="true"></p>
+      <div class="pron-barras" id="pron-barras" role="list" aria-label="Precipitación por hora"></div>
+      <p class="pron-escala" id="pron-escala"></p>
     </section>
 
     <section aria-labelledby="titulo-puntos">
@@ -103,6 +118,7 @@
     </a>
   </nav>
 
+  <script defer src="../JavaScript/cabecera.js"></script>
   <script type="module" src="../JavaScript/panel.js"></script>
 </body>
 </html>

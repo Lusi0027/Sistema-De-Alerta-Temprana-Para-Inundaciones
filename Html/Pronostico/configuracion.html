@@ -6,17 +6,20 @@
   <title>Ajustes · Alerta de inundaciones</title>
   <link rel="icon" href="../../Assets/favicon.svg" type="image/svg+xml">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="../../Css/estilos.css">
   <link rel="stylesheet" href="../../Css/semaforo.css">
 </head>
-<body>
+<body class="pagina-configuracion">
   <header class="header-title">
-    <h1>Ajustes de alertas</h1>
-    <p class="subtitulo">Umbrales de cada punto. Solo operadores autorizados.</p>
+    <a class="marca-logo" href="../index.html" aria-label="Ir al inicio">
+      <img src="../../Assets/favicon.svg" alt="">
+    </a>
+    <div class="header-copy">
+      <h1>Ajustes de alertas</h1>
+      <p class="subtitulo">Umbrales de cada punto ·
+        <time id="fecha-hoy" class="fecha-hoy"></time>
+      </p>
+    </div>
   </header>
 
   <main class="content">
@@ -26,7 +29,7 @@
 
     <!-- Inicio de sesión (solo con Supabase) -->
     <section id="seccion-login" class="tarjeta" aria-labelledby="titulo-login" hidden>
-      <h2 id="titulo-login" style="margin-top:0">Iniciar sesión</h2>
+      <h2 id="titulo-login">Iniciar sesión</h2>
       <form id="form-login" class="formulario">
         <div class="campo">
           <label for="login-correo">Correo</label>
@@ -44,7 +47,7 @@
 
     <!-- Formulario de umbrales -->
     <section id="seccion-config" class="tarjeta" aria-labelledby="titulo-config" hidden>
-      <h2 id="titulo-config" style="margin-top:0">Umbrales</h2>
+      <h2 id="titulo-config">Umbrales</h2>
       <form id="form-config" class="formulario" novalidate>
         <div class="campo">
           <label for="selector-punto">Punto de medición</label>
@@ -59,19 +62,19 @@
 
         <div class="grid-2">
           <div class="campo">
-            <label for="cfg-nivel-amarillo">Nivel amarillo (cm)</label>
+            <label for="cfg-nivel-amarillo">Umbral de atención (cm)</label>
             <input id="cfg-nivel-amarillo" type="number" step="0.1" min="0" required>
           </div>
           <div class="campo">
-            <label for="cfg-nivel-rojo">Nivel rojo (cm)</label>
+            <label for="cfg-nivel-rojo">Umbral de alerta (cm)</label>
             <input id="cfg-nivel-rojo" type="number" step="0.1" min="0" required>
           </div>
           <div class="campo">
-            <label for="cfg-vel-amarillo">Subida amarilla (cm/min)</label>
+            <label for="cfg-vel-amarillo">Rapidez de subida para atención (cm/min)</label>
             <input id="cfg-vel-amarillo" type="number" step="0.1" min="0" required>
           </div>
           <div class="campo">
-            <label for="cfg-vel-rojo">Subida roja (cm/min)</label>
+            <label for="cfg-vel-rojo">Rapidez de subida para alerta (cm/min)</label>
             <input id="cfg-vel-rojo" type="number" step="0.1" min="0" required>
           </div>
         </div>
@@ -86,10 +89,10 @@
     </section>
 
     <section class="tarjeta" aria-labelledby="titulo-regla">
-      <h2 id="titulo-regla" style="margin-top:0">Cómo se decide el color</h2>
-      <p style="margin:0 0 8px"><strong>Rojo:</strong> el nivel llega al umbral rojo <em>o</em> el agua sube a la velocidad roja.</p>
-      <p style="margin:0 0 8px"><strong>Amarillo:</strong> el nivel llega al umbral amarillo <em>o</em> sube a la velocidad amarilla.</p>
-      <p style="margin:0"><strong>Verde:</strong> ninguna de las anteriores. El nivel se mide desde el fondo; la velocidad se calcula comparando con la lectura de hace al menos un minuto.</p>
+      <h2 id="titulo-regla">Cómo se decide el color</h2>
+      <p class="regla-item"><strong>Rojo:</strong> el nivel llega al umbral rojo <em>o</em> el agua sube a la velocidad roja.</p>
+      <p class="regla-item"><strong>Amarillo:</strong> el nivel llega al umbral amarillo <em>o</em> sube a la velocidad amarilla.</p>
+      <p class="regla-item"><strong>Verde:</strong> ninguna de las anteriores. El nivel se mide desde el fondo; la velocidad se calcula comparando con la lectura de hace al menos un minuto.</p>
     </section>
   </main>
 
@@ -110,6 +113,7 @@
     </a>
   </nav>
 
+  <script defer src="../../JavaScript/cabecera.js"></script>
   <script type="module" src="../../JavaScript/Estado/configuracion.js"></script>
 </body>
 </html>

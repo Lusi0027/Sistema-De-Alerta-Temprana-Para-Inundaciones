@@ -1,6 +1,7 @@
 # Credenciales y llaves 
 .env
 .env.*
+!.env.example
 secrets.h
 config.local.js
 **/credenciales.*

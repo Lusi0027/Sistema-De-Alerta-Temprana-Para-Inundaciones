@@ -53,32 +53,47 @@ export async function cargarPronostico() {
 
   try {
     const { horas } = await obtenerPronostico();
-    const prox3 = horas.slice(0, 3);
-    const maxMm3 = Math.max(0, ...prox3.map((h) => h.mm));
-    const maxProb3 = Math.max(0, ...prox3.map((h) => h.prob ?? 0));
-    const clase = clasificarLluvia(maxMm3);
+    const prox6 = horas.slice(0, 6);
+    const maxMm6 = Math.max(0, ...prox6.map((h) => h.mm));
+    const maxProb6 = Math.max(0, ...prox6.map((h) => h.prob ?? 0));
+    const clase = clasificarLluvia(maxMm6);
 
-    resumen.textContent = maxMm3 < 0.1
-      ? 'Sin lluvia prevista en las próximas 3 horas'
-      : `${clase} en las próximas 3 horas`;
+    resumen.textContent = maxMm6 < 0.1
+      ? 'Sin lluvia prevista en las próximas 6 horas'
+      : `${clase} en las próximas 6 horas`;
 
-    const maxMm12 = Math.max(0, ...horas.map((h) => h.mm));
     detalle.textContent =
-      `Probabilidad máx. ${maxProb3} % · hasta ${maxMm12.toFixed(1)} mm/h en 12 h`;
+      `Probabilidad máx. ${maxProb6} % · hasta ${maxMm6.toFixed(1)} mm/h en 6 h`;
 
-    const escalaMax = Math.max(5, maxMm12);
-    barras.replaceChildren(...horas.map((h) => {
-      const b = document.createElement('div');
-      b.className = 'barra';
-      b.style.height = `${Math.round((h.mm / escalaMax) * 100)}%`;
-      b.title = `${h.hora}: ${h.mm.toFixed(1)} mm`;
-      return b;
+    const escalaMax = maxMm6 || 1;
+    barras.replaceChildren(...prox6.map((h) => {
+      const columna = document.createElement('div');
+      columna.className = 'pron-columna';
+      columna.setAttribute('role', 'listitem');
+      columna.title = `${h.hora}: ${h.mm.toFixed(1)} mm/h`;
+
+      const valor = Object.assign(document.createElement('span'), {
+        className: 'pron-valor',
+        textContent: `${h.mm.toFixed(1)} mm`,
+      });
+      const pista = document.createElement('div');
+      pista.className = 'pron-track';
+      const barra = document.createElement('span');
+      barra.className = 'barra';
+      barra.style.height = h.mm > 0
+        ? `${Math.max(5, Math.round((h.mm / escalaMax) * 100))}%`
+        : '0';
+      pista.append(barra);
+
+      const hora = Object.assign(document.createElement('span'), {
+        className: 'pron-hora',
+        textContent: h.hora,
+      });
+      columna.append(valor, pista, hora);
+      return columna;
     }));
 
-    escala.replaceChildren(
-      Object.assign(document.createElement('span'), { textContent: horas[0].hora }),
-      Object.assign(document.createElement('span'), { textContent: horas[horas.length - 1].hora }),
-    );
+    escala.textContent = 'Precipitación por hora · altura relativa al máximo previsto';
   } catch {
     resumen.textContent = 'Pronóstico no disponible';
     detalle.textContent = 'No se pudo consultar Open-Meteo. Las mediciones del sensor siguen funcionando.';

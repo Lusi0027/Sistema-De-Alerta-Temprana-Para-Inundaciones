@@ -6,17 +6,21 @@
   <title>Historial · Alerta de inundaciones</title>
   <link rel="icon" href="../../Assets/favicon.svg" type="image/svg+xml">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="../../Css/estilos.css">
   <link rel="stylesheet" href="../../Css/semaforo.css">
+  <link rel="stylesheet" href="../../Css/historial.css">
 </head>
 <body>
   <header class="header-title">
-    <h1>Historial de lecturas</h1>
-    <p class="subtitulo">Nivel del agua en el tiempo, con los umbrales del punto</p>
+    <a class="marca-logo" href="../index.html" aria-label="Ir al inicio">
+      <img src="../../Assets/favicon.svg" alt="">
+    </a>
+    <div class="header-copy">
+      <h1>Historial de lecturas</h1>
+      <p class="subtitulo">Nivel del agua y umbrales ·
+        <time id="fecha-hoy" class="fecha-hoy"></time>
+      </p>
+    </div>
   </header>
 
   <main class="content">
@@ -70,7 +74,7 @@
     </section>
 
     <section class="tarjeta" aria-labelledby="titulo-tabla">
-      <h2 id="titulo-tabla" style="margin-top:0">Últimas lecturas</h2>
+      <h2 id="titulo-tabla">Últimas lecturas</h2>
       <div class="tabla-scroll">
         <table>
           <thead>
@@ -99,6 +103,7 @@
     </a>
   </nav>
 
+  <script defer src="../../JavaScript/cabecera.js"></script>
   <script type="module" src="../../JavaScript/Estado/historial.js"></script>
 </body>
 </html>

@@ -67,6 +67,24 @@ function pintarGrafica(config) {
     'aria-label': `Gráfica de nivel del agua con ${lecturas.length} lecturas`,
   });
 
+  const ySuperior = y(maxNivel);
+  const yRojo = y(config.nivel_rojo_cm);
+  const yAmarillo = y(config.nivel_amarillo_cm);
+  const yInferior = y(0);
+  for (const [clase, inicio, fin] of [
+    ['zona-alerta', ySuperior, yRojo],
+    ['zona-atencion', yRojo, yAmarillo],
+    ['zona-normal', yAmarillo, yInferior],
+  ]) {
+    svg.append(crearSvg('rect', {
+      x: margen.izquierda,
+      y: inicio,
+      width: anchoUtil,
+      height: Math.max(0, fin - inicio),
+      class: clase,
+    }));
+  }
+
   for (let i = 0; i <= 4; i++) {
     const valor = (maxNivel / 4) * i;
     const linea = crearSvg('line', {

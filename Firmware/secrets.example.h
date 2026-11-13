@@ -2,8 +2,8 @@
 // secrets.h está en .gitignore: NO lo subas a GitHub.
 #pragma once
 
-#define WIFI_SSID         "nombre-de-tu-wifi"
-#define WIFI_PASSWORD     "clave-de-tu-wifi"
+#define WIFI_SSID         "nombre del wifi"
+#define WIFI_PASSWORD     "contraseña"
 
 
 #define SUPABASE_URL      "https://ujzanzktijleyipdnofk.supabase.co"

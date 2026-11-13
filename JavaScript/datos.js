@@ -68,6 +68,12 @@ const PUNTOS_DEMO = [
 ].map((nombre, i) => ({
   id: i + 1, nombre, sector: nombre, altura_sensor_cm: 100, activo: true,
 }));
+const PUNTO_DISPONIBLE = 'Barrio Lindo';
+export const PUNTOS_PROXIMAMENTE = Object.freeze(
+  PUNTOS_DEMO.map((punto) => punto.nombre)
+    .filter((nombre) => nombre !== PUNTO_DISPONIBLE)
+    .sort((a, b) => a.localeCompare(b, 'es')),
+);
 
 // Qué tan fuerte "llueve" en cada punto durante el ciclo automático.
 const AMPLITUD_DEMO = { 1: 1, 2: 1, 3: 0.75 }; // el resto apenas se mueve
@@ -142,11 +148,13 @@ async function puntosDemo() {
 // API pública
 // =====================================================================
 export async function obtenerPuntos() {
-  if (MODO_DEMO) return puntosDemo();
+  if (MODO_DEMO) return (await puntosDemo()).filter((p) => p.nombre === PUNTO_DISPONIBLE);
   const { data, error } = await supabase
     .from('puntos').select('*').eq('activo', true).order('nombre');
   if (error) throw error;
-  return data.map((p) => ({ ...p, altura_sensor_cm: Number(p.altura_sensor_cm) }));
+  return data
+    .map((p) => ({ ...p, altura_sensor_cm: Number(p.altura_sensor_cm) }))
+    .filter((p) => p.nombre === PUNTO_DISPONIBLE);
 }
 
 export async function obtenerConfig(puntoId) {

@@ -15,8 +15,12 @@
 const SUPABASE_URL = 'https://ujzanzktijleyipdnofk.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqemFuemt0aWpsZXlpcGRub2ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ1MjYyMDAsImV4cCI6MjExMDEwMjIwMH0.y3y5iu9apjviPL6wQpgxnOyz4te9kWrHps_VwfKbeFw';
 
+const VALOR_PENDIENTE = 'PEGA_AQUI';
 export const MODO_DEMO =
-  SUPABASE_URL.startsWith('https://ujzanzktijleyipdnofk.supabase.co') || SUPABASE_ANON_KEY.startsWith('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqemFuemt0aWpsZXlpcGRub2ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ1MjYyMDAsImV4cCI6MjExMDEwMjIwMH0.y3y5iu9apjviPL6wQpgxnOyz4te9kWrHps_VwfKbeFw');
+  !SUPABASE_URL.startsWith('https://')
+  || !SUPABASE_ANON_KEY
+  || SUPABASE_URL.includes(VALOR_PENDIENTE)
+  || SUPABASE_ANON_KEY.includes(VALOR_PENDIENTE);
 
 export let supabase = null;
 
