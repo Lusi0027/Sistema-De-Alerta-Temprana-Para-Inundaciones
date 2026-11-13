@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Historial · Alerta de inundaciones</title>
+  <link rel="icon" href="../../Assets/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../Css/estilos.css">
+  <link rel="stylesheet" href="../../Css/semaforo.css">
+</head>
+<body>
+  <header class="header-title">
+    <h1>Historial de lecturas</h1>
+    <p class="subtitulo">Nivel del agua en el tiempo, con los umbrales del punto</p>
+  </header>
+
+  <main class="content">
+    <p id="aviso" class="aviso" role="alert" hidden></p>
+
+    <div class="controles">
+      <div class="campo">
+        <label for="selector-punto">Punto de medición</label>
+        <select id="selector-punto" disabled>
+          <option>Cargando…</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="selector-rango">Período</label>
+        <select id="selector-rango">
+          <option value="1">Última hora</option>
+          <option value="6" selected>Últimas 6 horas</option>
+          <option value="24">Últimas 24 horas</option>
+          <option value="168">Últimos 7 días</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="fila-botones">
+      <button class="boton" type="button" id="btn-actualizar">Actualizar</button>
+      <button class="boton boton-sec" type="button" id="btn-csv" disabled>Descargar CSV</button>
+    </div>
+
+    <dl class="lecturas">
+      <div>
+        <dt>Nivel máximo</dt>
+        <dd><span id="est-nivel-max">--</span> <span class="unidad">cm</span></dd>
+      </div>
+      <div>
+        <dt>Subida máxima</dt>
+        <dd><span id="est-vel-max">--</span> <span class="unidad">cm/min</span></dd>
+      </div>
+      <div>
+        <dt>Lecturas</dt>
+        <dd id="est-total">--</dd>
+      </div>
+      <div>
+        <dt>En precaución o peligro</dt>
+        <dd id="est-alertas">--</dd>
+      </div>
+    </dl>
+
+    <section class="tarjeta" aria-labelledby="titulo-grafica">
+      <h2 id="titulo-grafica" class="solo-lectores">Gráfica del nivel del agua</h2>
+      <div class="grafica" id="grafica"></div>
+    </section>
+
+    <section class="tarjeta" aria-labelledby="titulo-tabla">
+      <h2 id="titulo-tabla" style="margin-top:0">Últimas lecturas</h2>
+      <div class="tabla-scroll">
+        <table>
+          <thead>
+            <tr><th scope="col">Hora</th><th scope="col">Nivel cm</th><th scope="col">cm/min</th><th scope="col">Estado</th></tr>
+          </thead>
+          <tbody id="tabla-lecturas"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2026 Sistema de alerta temprana para inundaciones</footer>
+
+  <nav class="bottom-nav" aria-label="Navegación principal">
+    <a class="nav-item" href="../index.html">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/></svg>
+      Inicio
+    </a>
+    <a class="nav-item active" href="historial.html" aria-current="page">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      Historial
+    </a>
+    <a class="nav-item" href="configuracion.html">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+      Ajustes
+    </a>
+  </nav>
+
+  <script type="module" src="../../JavaScript/Estado/historial.js"></script>
+</body>
+</html>

@@ -1,39 +1,108 @@
-<!DOCTYPE html>
-    <html lang="es">
-    <head>
-        <meta charset="UFT-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-        <title>Sistema de alerta temprana para inundaciones</title>
-        <link rel="stylesheet" href="/Css/estilos.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Noto+Sans+KR:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
-    </head>
-    </html>
-    <Body>
-        
-        <header class="site">
-        <div class ="brand">
-            <div class="Logo"></div>
-            <div>
-            <h1>Alerta temprana para inundaciones</h1>
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Sistema de alerta temprana para inundaciones</title>
+  <link rel="icon" href="../Assets/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../Css/estilos.css">
+  <link rel="stylesheet" href="../Css/semaforo.css">
+</head>
+<body>
+  <header class="header-title">
+    <h1>Sistema de alerta temprana para inundaciones</h1>
+    <p class="subtitulo">San Pedro de Macorís · actualizado en tiempo real</p>
+  </header>
+
+  <main class="content">
+    <!-- Solo se muestra cuando no hay Supabase configurado -->
+    <div id="demo-bar" class="demo-bar" hidden>
+      <p><strong>Modo demostración:</strong> datos simulados. Elige un escenario para ver el semáforo.</p>
+      <div id="demo-botones" class="demo-botones" role="group" aria-label="Escenario de la demostración"></div>
+    </div>
+
+    <p id="aviso" class="aviso" role="alert" hidden></p>
+
+    <div class="campo">
+      <label for="selector-punto">Punto de medición</label>
+      <select id="selector-punto" disabled>
+        <option>Cargando puntos…</option>
+      </select>
+    </div>
+
+    <section class="tarjeta estado-card" aria-labelledby="titulo-alerta">
+      <h2 id="titulo-alerta" class="solo-lectores">Alerta de inundación</h2>
+
+      <!-- panel.js cambia data-estado a verde | amarillo | rojo | desconocido -->
+      <div class="semaforo" id="semaforo" data-estado="desconocido" role="img" aria-label="Semáforo: sin datos">
+        <span class="luz luz-rojo"></span>
+        <span class="luz luz-amarillo"></span>
+        <span class="luz luz-verde"></span>
+      </div>
+
+      <div class="estado-info" aria-live="polite">
+        <span class="etiqueta">Estado actual</span>
+        <span class="pill" id="estado-pill" data-estado="desconocido">Sin datos</span>
+        <p id="estado-detalle">Esperando la primera lectura.</p>
+      </div>
+    </section>
+
+    <dl class="lecturas" id="lecturas">
+      <div>
+        <dt>Nivel del agua</dt>
+        <dd><span id="dato-nivel">--</span> <span class="unidad">cm</span></dd>
+      </div>
+      <div>
+        <dt>Velocidad de subida</dt>
+        <dd><span id="dato-velocidad">--</span> <span class="unidad">cm/min</span></dd>
+      </div>
+    </dl>
+    <p class="edad" id="dato-hora">Sin lecturas</p>
+
+    <section class="tarjeta pronostico" aria-labelledby="titulo-pron">
+      <div class="pron-fila">
+        <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1565C0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 9a3.5 3.5 0 0 1 .5 7H7z"/><path d="M9 19l-1 2M13 19l-1 2M17 19l-1 2"/></svg>
+        <div class="pron-texto">
+          <span class="etiqueta" id="titulo-pron">Pronóstico · Open-Meteo</span>
+          <strong id="pron-resumen">Cargando…</strong>
+          <span id="pron-detalle"></span>
         </div>
-        </div>
-            <div style="display:flex;align-items:center;gap:16px;">
-            <div class="date" id="fecha-hoy">Cargando fecha...</div>
-        </header>
+      </div>
+      <div class="pron-barras" id="pron-barras" aria-hidden="true"></div>
+      <p class="pron-escala" id="pron-escala" aria-hidden="true"></p>
+    </section>
 
-        <div>
-            <h2>Alerta de inundación</h2>
-            <p>Punto de medicion 1 - San Pedro de Macorís</p>
-        </div>
+    <section aria-labelledby="titulo-puntos">
+      <h2 id="titulo-puntos">Todos los puntos</h2>
+      <ul class="lista-puntos" id="lista-puntos"></ul>
+    </section>
+  </main>
 
+  <footer>
+    © 2026 Sistema de alerta temprana para inundaciones<br>
+    Datos meteorológicos: <a href="https://open-meteo.com/">Open-Meteo.com</a>
+  </footer>
 
-        
+  <nav class="bottom-nav" aria-label="Navegación principal">
+    <a class="nav-item active" href="index.html" aria-current="page">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/></svg>
+      Inicio
+    </a>
+    <a class="nav-item" href="Pronostico/historial.html">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      Historial
+    </a>
+    <a class="nav-item" href="Pronostico/configuracion.html">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+      Ajustes
+    </a>
+  </nav>
 
-
-        <footer>
-             © 2026 Alerta temprana para inundaciones · Todos los derechos reservados<br>
-                <a href="inicioSesion.html" id="enlaceCuenta">Iniciar sesión</a> · <a href="politica-de-privacidad.html">Política de privacidad</a> · <a href="politica-de-privacidad.html#cookies">Cookies</a>
-        </footer>
-    </Body>
+  <script type="module" src="../JavaScript/panel.js"></script>
+</body>
+</html>

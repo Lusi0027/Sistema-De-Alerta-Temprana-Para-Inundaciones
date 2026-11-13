@@ -1,0 +1,80 @@
+/* =========================================================
+   Semáforo y colores de estado.
+   panel.js solo cambia data-estado: verde | amarillo | rojo | desconocido
+   ========================================================= */
+:root {
+  --verde: #1B7F3B;
+  --verde-luz: #43A047;
+  --amarillo: #FDD835;
+  --amarillo-texto: #3D2F00;
+  --rojo: #C62828;
+  --rojo-luz: #E53935;
+}
+
+.semaforo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  background: #1E2329;
+  border-radius: 44px;
+  flex: none;
+}
+
+.luz {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #5A606B;
+  opacity: 0.35;
+  transition: opacity 0.3s, box-shadow 0.3s, background 0.3s;
+}
+
+/* Solo se enciende la luz del estado actual */
+.semaforo[data-estado="rojo"] .luz-rojo {
+  background: var(--rojo-luz); opacity: 1; box-shadow: 0 0 22px var(--rojo-luz);
+  animation: pulso 1.2s ease-in-out infinite;
+}
+.semaforo[data-estado="amarillo"] .luz-amarillo {
+  background: var(--amarillo); opacity: 1; box-shadow: 0 0 22px var(--amarillo);
+}
+.semaforo[data-estado="verde"] .luz-verde {
+  background: var(--verde-luz); opacity: 1; box-shadow: 0 0 22px var(--verde-luz);
+}
+
+@keyframes pulso {
+  50% { box-shadow: 0 0 34px var(--rojo-luz); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .luz { transition: none; }
+  .semaforo[data-estado="rojo"] .luz-rojo { animation: none; }
+}
+
+/* Etiqueta de estado (siempre con texto, no solo color) */
+.pill {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 20px;
+  font-weight: 600;
+  background: #E3E8EC;
+  color: #3A4A57;
+}
+.pill[data-estado="verde"]    { background: var(--verde);    color: #FFFFFF; }
+.pill[data-estado="amarillo"] { background: var(--amarillo); color: var(--amarillo-texto); }
+.pill[data-estado="rojo"]     { background: var(--rojo);     color: #FFFFFF; }
+
+/* Punto de color para listas y tablas */
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #9AA7B1;
+  flex: none;
+}
+.dot[data-estado="verde"]    { background: var(--verde-luz); }
+.dot[data-estado="amarillo"] { background: var(--amarillo); box-shadow: inset 0 0 0 1px #A67C00; }
+.dot[data-estado="rojo"]     { background: var(--rojo-luz); }
+
+/* Etiqueta pequeña para tablas */
+.pill-chica { font-size: 13px; padding: 2px 10px; }

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ajustes · Alerta de inundaciones</title>
+  <link rel="icon" href="../../Assets/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../Css/estilos.css">
+  <link rel="stylesheet" href="../../Css/semaforo.css">
+</head>
+<body>
+  <header class="header-title">
+    <h1>Ajustes de alertas</h1>
+    <p class="subtitulo">Umbrales de cada punto. Solo operadores autorizados.</p>
+  </header>
+
+  <main class="content">
+    <p id="nota-demo" class="aviso info" hidden>
+      Modo demostración: los cambios se guardan solo en este navegador.
+    </p>
+
+    <!-- Inicio de sesión (solo con Supabase) -->
+    <section id="seccion-login" class="tarjeta" aria-labelledby="titulo-login" hidden>
+      <h2 id="titulo-login" style="margin-top:0">Iniciar sesión</h2>
+      <form id="form-login" class="formulario">
+        <div class="campo">
+          <label for="login-correo">Correo</label>
+          <input id="login-correo" type="email" autocomplete="username" required>
+        </div>
+        <div class="campo">
+          <label for="login-clave">Contraseña</label>
+          <input id="login-clave" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="fila-botones">
+          <button class="boton" type="submit">Entrar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Formulario de umbrales -->
+    <section id="seccion-config" class="tarjeta" aria-labelledby="titulo-config" hidden>
+      <h2 id="titulo-config" style="margin-top:0">Umbrales</h2>
+      <form id="form-config" class="formulario" novalidate>
+        <div class="campo">
+          <label for="selector-punto">Punto de medición</label>
+          <select id="selector-punto"></select>
+        </div>
+
+        <div class="campo">
+          <label for="cfg-altura">Altura del sensor sobre el fondo (cm)</label>
+          <input id="cfg-altura" type="number" step="0.1" min="10" max="400" required>
+          <small>Calibración: distancia del sensor al fondo con el cauce seco.</small>
+        </div>
+
+        <div class="grid-2">
+          <div class="campo">
+            <label for="cfg-nivel-amarillo">Nivel amarillo (cm)</label>
+            <input id="cfg-nivel-amarillo" type="number" step="0.1" min="0" required>
+          </div>
+          <div class="campo">
+            <label for="cfg-nivel-rojo">Nivel rojo (cm)</label>
+            <input id="cfg-nivel-rojo" type="number" step="0.1" min="0" required>
+          </div>
+          <div class="campo">
+            <label for="cfg-vel-amarillo">Subida amarilla (cm/min)</label>
+            <input id="cfg-vel-amarillo" type="number" step="0.1" min="0" required>
+          </div>
+          <div class="campo">
+            <label for="cfg-vel-rojo">Subida roja (cm/min)</label>
+            <input id="cfg-vel-rojo" type="number" step="0.1" min="0" required>
+          </div>
+        </div>
+
+        <p id="mensaje" class="aviso" role="status" hidden></p>
+
+        <div class="fila-botones">
+          <button class="boton" type="submit" id="btn-guardar">Guardar cambios</button>
+          <button class="boton boton-sec" type="button" id="btn-salir" hidden>Cerrar sesión</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="tarjeta" aria-labelledby="titulo-regla">
+      <h2 id="titulo-regla" style="margin-top:0">Cómo se decide el color</h2>
+      <p style="margin:0 0 8px"><strong>Rojo:</strong> el nivel llega al umbral rojo <em>o</em> el agua sube a la velocidad roja.</p>
+      <p style="margin:0 0 8px"><strong>Amarillo:</strong> el nivel llega al umbral amarillo <em>o</em> sube a la velocidad amarilla.</p>
+      <p style="margin:0"><strong>Verde:</strong> ninguna de las anteriores. El nivel se mide desde el fondo; la velocidad se calcula comparando con la lectura de hace al menos un minuto.</p>
+    </section>
+  </main>
+
+  <footer>© 2026 Sistema de alerta temprana para inundaciones</footer>
+
+  <nav class="bottom-nav" aria-label="Navegación principal">
+    <a class="nav-item" href="../index.html">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/></svg>
+      Inicio
+    </a>
+    <a class="nav-item" href="historial.html">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      Historial
+    </a>
+    <a class="nav-item active" href="configuracion.html" aria-current="page">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+      Ajustes
+    </a>
+  </nav>
+
+  <script type="module" src="../../JavaScript/Estado/configuracion.js"></script>
+</body>
+</html>
