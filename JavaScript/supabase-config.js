@@ -12,11 +12,11 @@
 // con datos simulados, sin conexión a ningún servidor.
 // =====================================================================
 
-const SUPABASE_URL = 'PEGA_AQUI_LA_URL';
-const SUPABASE_ANON_KEY = 'PEGA_AQUI_LA_ANON_KEY';
+const SUPABASE_URL = 'https://ujzanzktijleyipdnofk.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqemFuemt0aWpsZXlpcGRub2ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ1MjYyMDAsImV4cCI6MjExMDEwMjIwMH0.y3y5iu9apjviPL6wQpgxnOyz4te9kWrHps_VwfKbeFw';
 
 export const MODO_DEMO =
-  SUPABASE_URL.startsWith('PEGA_') || SUPABASE_ANON_KEY.startsWith('PEGA_');
+  SUPABASE_URL.startsWith('https://ujzanzktijleyipdnofk.supabase.co') || SUPABASE_ANON_KEY.startsWith('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqemFuemt0aWpsZXlpcGRub2ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ1MjYyMDAsImV4cCI6MjExMDEwMjIwMH0.y3y5iu9apjviPL6wQpgxnOyz4te9kWrHps_VwfKbeFw');
 
 export let supabase = null;
 

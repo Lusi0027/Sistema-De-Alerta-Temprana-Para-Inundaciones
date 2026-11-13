@@ -1,4 +1,4 @@
-# Credenciales y llaves (nunca subir)
+# Credenciales y llaves 
 .env
 .env.*
 secrets.h

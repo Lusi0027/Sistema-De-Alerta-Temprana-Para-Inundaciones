@@ -18,7 +18,9 @@
 
 body {
   margin: 0;
-  background: var(--fondo);
+  background:
+    radial-gradient(ellipse at 50% 0, rgba(21, 101, 192, 0.08), transparent 42rem),
+    var(--fondo);
   color: var(--texto);
   font-family: 'Fredoka', system-ui, sans-serif;
   line-height: 1.4;
@@ -43,7 +45,7 @@ a { color: var(--azul); }
 .content,
 footer {
   width: 100%;
-  max-width: 720px;
+  max-width: 960px;
   margin-inline: auto;
   padding-inline: 20px;
 }
@@ -76,6 +78,7 @@ footer {
   border-radius: 20px;
   box-shadow: var(--sombra);
   padding: 16px;
+  border: 1px solid rgba(201, 212, 220, 0.72);
 }
 
 .etiqueta { font-size: 13px; color: var(--suave); }
@@ -84,6 +87,7 @@ footer {
   display: flex;
   gap: 20px;
   align-items: center;
+  min-height: 188px;
 }
 .estado-info { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; min-width: 0; }
 .estado-info p { margin: 0; font-size: 15px; }
@@ -99,6 +103,7 @@ footer {
   background: var(--tarjeta);
   border-radius: var(--radio);
   box-shadow: var(--sombra);
+  border: 1px solid rgba(201, 212, 220, 0.72);
 }
 .lecturas dt { font-size: 13px; color: var(--suave); }
 .lecturas dd { margin: 4px 0 0; font-size: 28px; font-weight: 600; }
@@ -206,6 +211,7 @@ select, input[type="number"], input[type="email"], input[type="password"] {
   border-radius: 14px;
   background: var(--tarjeta);
   box-shadow: var(--sombra);
+  border: 1px solid rgba(201, 212, 220, 0.72);
   color: var(--texto);
   font-family: inherit;
   font-size: 16px;
@@ -243,6 +249,7 @@ th { font-size: 13px; font-weight: 500; color: var(--suave); }
   background: #FFFFFF;
   border-top: 1px solid var(--linea);
   padding: 8px 8px calc(12px + env(safe-area-inset-bottom));
+  z-index: 10;
 }
 .nav-item {
   flex: 1;
@@ -261,4 +268,56 @@ th { font-size: 13px; font-weight: 500; color: var(--suave); }
 
 @media (min-width: 720px) {
   .header-title h1 { font-size: 26px; }
+  .header-title { padding-top: 36px; }
+  .content { gap: 16px; padding-top: 12px; }
+  .tarjeta { padding: 22px; }
+}
+
+@media (min-width: 960px) {
+  .pagina-panel .header-title,
+  .pagina-panel .content,
+  .pagina-panel footer {
+    max-width: 1160px;
+  }
+
+  .pagina-panel .content {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "demo demo"
+      "aviso aviso"
+      "punto punto"
+      "estado lecturas"
+      "pron edad"
+      "puntos puntos";
+    align-items: stretch;
+    gap: 18px 22px;
+  }
+
+  .pagina-panel #demo-bar { grid-area: demo; }
+  .pagina-panel #aviso { grid-area: aviso; }
+  .pagina-panel .campo { grid-area: punto; max-width: 520px; }
+  .pagina-panel .estado-card { grid-area: estado; }
+  .pagina-panel .lecturas { grid-area: lecturas; align-self: center; }
+  .pagina-panel .edad { grid-area: edad; align-self: start; }
+  .pagina-panel .pronostico { grid-area: pron; }
+  .pagina-panel .content > section[aria-labelledby="titulo-puntos"] { grid-area: puntos; }
+  .pagina-panel .lista-puntos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .pagina-panel .estado-card,
+  .pagina-panel .pronostico,
+  .pagina-panel .lecturas > div,
+  .pagina-panel .punto-item {
+    box-shadow: 0 4px 16px rgba(20, 33, 43, 0.06);
+  }
+}
+
+@media (max-width: 380px) {
+  .header-title, .content, footer { padding-inline: 14px; }
+  .estado-card { gap: 12px; padding: 14px; }
+  .semaforo { gap: 8px; padding: 11px; }
+  .luz { width: 46px; height: 46px; }
+  .pill { font-size: 18px; }
+  .lecturas > div { padding: 12px; }
+  .lecturas dd { font-size: 24px; }
 }
